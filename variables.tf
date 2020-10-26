@@ -184,38 +184,38 @@ variable "intra_subnets" {
   default     = []
 }
 
-variable "public_subnet_routes" {
-  description = "A list of public subnet routes"
+variable "public_subnets_routes" {
+  description = "A list of public subnets routes"
   type        = list(map(string))
   default     = []
 }
 
-variable "private_subnet_routes" {
-  description = "A list of private subnet routes"
+variable "private_subnets_routes" {
+  description = "A list of private subnets routes"
   type        = list(map(string))
   default     = []
 }
 
-variable "database_subnet_routes" {
-  description = "A list of database subnet routes"
+variable "database_subnets_routes" {
+  description = "A list of extra database subnets routes"
   type        = list(map(string))
   default     = []
 }
 
-variable "redshift_subnet_routes" {
-  description = "A list of redshift subnet routes"
+variable "redshift_subnets_routes" {
+  description = "A list of redshift subnets routes"
   type        = list(map(string))
   default     = []
 }
 
-variable "elasticache_subnet_routes" {
-  description = "A list of elasticache subnet routes"
+variable "elasticache_subnets_routes" {
+  description = "A list of elasticache subnets routes"
   type        = list(map(string))
   default     = []
 }
 
-variable "intra_subnet_routes" {
-  description = "A list of intra subnet routes"
+variable "intra_subnets_routes" {
+  description = "A list of intra subnets routes"
   type        = list(map(string))
   default     = []
 }
