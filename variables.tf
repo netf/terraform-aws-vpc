@@ -184,6 +184,42 @@ variable "intra_subnets" {
   default     = []
 }
 
+variable "public_subnet_routes" {
+  description = "A list of public subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
+variable "private_subnet_routes" {
+  description = "A list of private subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
+variable "database_subnet_routes" {
+  description = "A list of database subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
+variable "redshift_subnet_routes" {
+  description = "A list of redshift subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
+variable "elasticache_subnet_routes" {
+  description = "A list of elasticache subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
+variable "intra_subnet_routes" {
+  description = "A list of intra subnet routes"
+  type        = list(map(string))
+  default     = {}
+}
+
 variable "create_database_subnet_route_table" {
   description = "Controls if separate route table for database should be created"
   type        = bool

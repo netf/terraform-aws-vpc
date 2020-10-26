@@ -197,6 +197,19 @@ resource "aws_route" "public_internet_gateway_ipv6" {
   gateway_id                  = aws_internet_gateway.this[0].id
 }
 
+resource "aws_route" "public_extra_routes" {
+  count = var.create_vpc  && length(var.public_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.public_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.public_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.public_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.public_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.public_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.public_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
+}
+
 #################
 # Private routes
 # There are as many routing tables as the number of NAT gateways
@@ -217,6 +230,18 @@ resource "aws_route_table" "private" {
     var.tags,
     var.private_route_table_tags,
   )
+}
+resource "aws_route" "private_extra_routes" {
+  count = var.create_vpc  && length(var.private_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.private_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.private_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.private_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.private_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.private_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.private_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
 }
 
 #################
@@ -271,6 +296,18 @@ resource "aws_route" "database_ipv6_egress" {
     create = "5m"
   }
 }
+resource "aws_route" "database_extra_routes" {
+  count = var.create_vpc  && length(var.database_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.database_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.database_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.database_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.database_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.database_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.database_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
+}
 
 #################
 # Redshift routes
@@ -287,6 +324,18 @@ resource "aws_route_table" "redshift" {
     var.tags,
     var.redshift_route_table_tags,
   )
+}
+resource "aws_route" "redshift_extra_routes" {
+  count = var.create_vpc  && length(var.redshift_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.redshift_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.redshift_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.redshift_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.redshift_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.redshift_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.redshift_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
 }
 
 #################
@@ -305,6 +354,18 @@ resource "aws_route_table" "elasticache" {
     var.elasticache_route_table_tags,
   )
 }
+resource "aws_route" "elasticache_extra_routes" {
+  count = var.create_vpc  && length(var.elasticache_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.elasticache_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.elasticache_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.elasticache_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.elasticache_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.elasticache_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.elasticache_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
+}
 
 #################
 # Intra routes
@@ -321,6 +382,19 @@ resource "aws_route_table" "intra" {
     var.tags,
     var.intra_route_table_tags,
   )
+}
+
+resource "aws_route" "intra_extra_routes" {
+  count = var.create_vpc  && length(var.intra_subnet_routes) > 0 && var.enable_nat_gateway ? local.nat_gateway_count * length(var.intra_subnet_routes) : 0
+  route_table_id         = element(aws_route_table.intra.*.id, floor(count.index / length(var.intra_subnet_routes)))
+  destination_cidr_block = lookup(element(concat(var.intra_subnet_routes, [""]), count.index / local.nat_gateway_count), "destination_cidr_block", "")
+  vpc_peering_connection_id = lookup(element(concat(var.intra_subnet_routes, [""]), count.index / local.nat_gateway_count), "vpc_peering_connection_id", "")
+  transit_gateway_id = lookup(element(concat(var.intra_subnet_routes, [""]), count.index / local.nat_gateway_count), "transit_gateway_id", "")
+  instance_id = lookup(element(concat(var.intra_subnet_routes, [""]), count.index / local.nat_gateway_count), "instance_id", "")
+
+  timeouts {
+    create = "5m"
+  }
 }
 
 ################
