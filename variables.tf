@@ -187,37 +187,37 @@ variable "intra_subnets" {
 variable "public_subnet_routes" {
   description = "A list of public subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "private_subnet_routes" {
   description = "A list of private subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "database_subnet_routes" {
   description = "A list of database subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "redshift_subnet_routes" {
   description = "A list of redshift subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "elasticache_subnet_routes" {
   description = "A list of elasticache subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "intra_subnet_routes" {
   description = "A list of intra subnet routes"
   type        = list(map(string))
-  default     = {}
+  default     = []
 }
 
 variable "create_database_subnet_route_table" {
