@@ -299,7 +299,7 @@ resource "aws_route" "database_ipv6_egress" {
 }
 resource "aws_route" "database_routes" {
   count                     = var.create_vpc && length(var.database_subnets) > 0 && length(var.database_subnets_routes) > 0 ? var.create_database_subnet_route_table ? length(var.database_subnets_routes) : local.nat_gateway_count * length(var.database_subnets_routes) : 0
-  route_table_id            = var.create_database_subnet_route_table ? aws_route_table.database[0].id : element(aws_route_table.private.*.id, floor(count.index / length(var.database_subnets_routes) + count.index))
+  route_table_id            = var.create_database_subnet_route_table ? aws_route_table.database[0].id : element(aws_route_table.private.*.id, floor((count.index / local.nat_gateway_count) + count.index))
   destination_cidr_block    = lookup(element(concat(var.database_subnets_routes, [""]), var.create_database_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "destination_cidr_block", "")
   vpc_peering_connection_id = lookup(element(concat(var.database_subnets_routes, [""]), var.create_database_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "vpc_peering_connection_id", "")
   transit_gateway_id        = lookup(element(concat(var.database_subnets_routes, [""]), var.create_database_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "transit_gateway_id", "")
@@ -328,7 +328,7 @@ resource "aws_route_table" "redshift" {
 }
 resource "aws_route" "redshift_routes" {
   count                     = var.create_vpc && length(var.redshift_subnets) > 0 && length(var.redshift_subnets_routes) > 0 ? var.create_redshift_subnet_route_table ? length(var.redshift_subnets_routes) : local.nat_gateway_count * length(var.redshift_subnets_routes) : 0
-  route_table_id            = var.create_redshift_subnet_route_table ? aws_route_table.redshift[0].id : element(aws_route_table.private.*.id, floor(count.index / length(var.redshift_subnets_routes) + count.index))
+  route_table_id            = var.create_redshift_subnet_route_table ? aws_route_table.redshift[0].id : element(aws_route_table.private.*.id, floor((count.index / local.nat_gateway_count) + count.index))
   destination_cidr_block    = lookup(element(concat(var.redshift_subnets_routes, [""]), var.create_redshift_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "destination_cidr_block", "")
   vpc_peering_connection_id = lookup(element(concat(var.redshift_subnets_routes, [""]), var.create_redshift_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "vpc_peering_connection_id", "")
   transit_gateway_id        = lookup(element(concat(var.redshift_subnets_routes, [""]), var.create_redshift_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "transit_gateway_id", "")
@@ -357,7 +357,7 @@ resource "aws_route_table" "elasticache" {
 }
 resource "aws_route" "elasticache_routes" {
   count                     = var.create_vpc && length(var.elasticache_subnets) > 0 && length(var.elasticache_subnets_routes) > 0 ? var.create_elasticache_subnet_route_table ? length(var.elasticache_subnets_routes) : local.nat_gateway_count * length(var.elasticache_subnets_routes) : 0
-  route_table_id            = var.create_elasticache_subnet_route_table ? aws_route_table.elasticache[0].id : element(aws_route_table.private.*.id, floor(count.index / length(var.elasticache_subnets_routes) + count.index))
+  route_table_id            = var.create_elasticache_subnet_route_table ? aws_route_table.elasticache[0].id : element(aws_route_table.private.*.id, floor((count.index / local.nat_gateway_count) + count.index))
   destination_cidr_block    = lookup(element(concat(var.elasticache_subnets_routes, [""]), var.create_elasticache_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "destination_cidr_block", "")
   vpc_peering_connection_id = lookup(element(concat(var.elasticache_subnets_routes, [""]), var.create_elasticache_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "vpc_peering_connection_id", "")
   transit_gateway_id        = lookup(element(concat(var.elasticache_subnets_routes, [""]), var.create_elasticache_subnet_route_table ? count.index : floor(count.index / local.nat_gateway_count)), "transit_gateway_id", "")
@@ -387,7 +387,7 @@ resource "aws_route_table" "intra" {
 
 resource "aws_route" "intra_routes" {
   count                     = var.create_vpc && length(var.intra_subnets) > 0 && length(var.intra_subnets_routes) > 0 ? local.nat_gateway_count * length(var.intra_subnets_routes) : 0
-  route_table_id            = element(aws_route_table.intra.*.id, floor(count.index / length(var.intra_subnets_routes) + count.index))
+  route_table_id            = element(aws_route_table.intra.*.id, floor((count.index / local.nat_gateway_count) + count.index))
   destination_cidr_block    = lookup(element(concat(var.intra_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "destination_cidr_block", "")
   vpc_peering_connection_id = lookup(element(concat(var.intra_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "vpc_peering_connection_id", "")
   transit_gateway_id        = lookup(element(concat(var.intra_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "transit_gateway_id", "")
