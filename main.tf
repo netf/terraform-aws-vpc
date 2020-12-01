@@ -234,7 +234,7 @@ resource "aws_route_table" "private" {
 resource "aws_route" "private_routes" {
   count = var.create_vpc && length(var.private_subnets) > 0 && length(var.private_subnets_routes) > 0 ? local.nat_gateway_count * length(var.private_subnets_routes) : 0
   #route_table_id            = element(aws_route_table.private.*.id, floor(count.index / length(var.private_subnets_routes) + count.index))
-  route_table_id            = element(aws_route_table.private.*.id, floor(length(count.index / local.nat_gateway_count)))
+  route_table_id            = element(aws_route_table.private.*.id, floor(count.index / local.nat_gateway_count))
   destination_cidr_block    = lookup(element(concat(var.private_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "destination_cidr_block", "")
   vpc_peering_connection_id = lookup(element(concat(var.private_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "vpc_peering_connection_id", "")
   transit_gateway_id        = lookup(element(concat(var.private_subnets_routes, [""]), floor(count.index / local.nat_gateway_count)), "transit_gateway_id", "")
